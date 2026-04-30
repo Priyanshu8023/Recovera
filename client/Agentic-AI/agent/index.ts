@@ -1,3 +1,8 @@
+// Main entry point for the Agentic AI module, orchestrating the flow 
+// from receiving an incident input, running RCA, making decisions, verifying outcomes, 
+// and building a comprehensive diagnostic report. It includes error handling to ensure 
+// that even in failure scenarios, a meaningful report is generated for auditing and review purposes.
+
 import { AgentInput, DiagnosticReport, AuditLogEntry, VerificationResult, AgentOutput, DecisionResult } from "./types";
 import { runRCA } from "./rca";
 import { decide } from "./decision-engine";

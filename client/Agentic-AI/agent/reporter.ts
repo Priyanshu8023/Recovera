@@ -1,3 +1,11 @@
+// Reporter module for the Agentic AI system, responsible for compiling the final diagnostic report 
+// after the RCA and decision-making processes. It calculates risk scores, 
+// determines if human review is needed, generates summaries, 
+// and constructs Slack payloads for notifications. 
+// The report includes all relevant information about the incident, root cause, 
+// actions taken, and verification results to provide a comprehensive overview 
+// for stakeholders and audit purposes.
+
 import { AgentInput, AgentOutput, DecisionResult, VerificationResult, DiagnosticReport, SlackPayload } from "./types";
 import { callLLM } from "./llm-caller";
 
