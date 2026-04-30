@@ -1,3 +1,5 @@
+// Adds a safety registry to mark actions as auto-fix, approval-needed, or blocked.
+
 import { SafetyClass } from "../agent/types";
 
 export function getSafetyClass(action: string): SafetyClass {

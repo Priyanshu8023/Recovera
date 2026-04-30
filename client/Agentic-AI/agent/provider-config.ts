@@ -1,3 +1,5 @@
+// Adds LLM provider config for Gemini as primary and Groq as fallback, with env-based validation.
+
 export type LLMProvider = "gemini" | "groq";
 
 export interface ProviderConfig {

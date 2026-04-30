@@ -1,3 +1,5 @@
+// Defines the core AI-agent contracts: incident input/output, decision paths, verification, audit, and fallback/error shapes.
+
 export type EventType =
   | "S3_PUBLIC"
   | "IAM_OVERPERMISSION"
