@@ -1,3 +1,5 @@
+// Provides few-shot examples for the AI agent to learn from, demonstrating both a positive case (S3_PUBLIC) and a negative case (UNKNOWN) with detailed reasoning and evidence.
+
 export const POSITIVE_S3_PUBLIC = `
 User:
 EVENT TYPE: S3_PUBLIC

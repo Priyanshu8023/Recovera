@@ -1,3 +1,5 @@
+// Builds the system prompt for the AI agent, defining its role, task, output format, constraints, and incorporating few-shot examples for better performance.
+
 import { getFewShotExamples } from "./few-shot-examples";
 
 export function buildSystemPrompt(): string {
