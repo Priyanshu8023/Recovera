@@ -1,3 +1,11 @@
+// Core verification logic for the AI agent, 
+// responsible for validating whether the proposed fix for a given event 
+// has been successfully implemented. 
+// It checks the resource configuration against expected criteria based on the event type 
+// (e.g., S3 public access, IAM overpermission, security group open ports) 
+// and returns a structured result indicating whether the issue is resolved, along with evidence and status. 
+// The verifier also handles edge cases like unknown events and provides detailed feedback for pending or error states.
+
 import { VerificationInput, VerificationResult } from "../agent/types";
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));

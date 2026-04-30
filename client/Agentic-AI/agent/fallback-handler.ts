@@ -1,3 +1,10 @@
+// Fallback handler for the AI agent, responsible for generating 
+// a structured response when the agent encounters an error during execution. 
+// It categorizes the failure reason (e.g., parse errors, LLM errors, unknown actions) 
+// and formats a response that can be used to alert users or trigger alternative workflows. 
+// The handler ensures that even in failure scenarios, the system provides meaningful feedback 
+// and maintains a consistent response structure.
+
 import { AgentInput, FallbackResponse, FailureReason } from "./types";
 import { LLMError } from "./errors";
 
