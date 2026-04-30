@@ -1,3 +1,5 @@
+// Decision engine for the AI agent, responsible for determining the appropriate action based on the parsed output from the LLM. It evaluates the confidence level, safety classification, and potential risks associated with the proposed action, and categorizes it into paths like "auto_fix", "approval_required", or "alert_only" with specific reasons for each decision. This ensures that actions taken by the agent are aligned with safety policies and risk tolerance levels.
+
 import { AgentOutput, ParseError, DecisionResult } from "./types";
 import { getSafetyClass } from "../tools/safety-registry";
 

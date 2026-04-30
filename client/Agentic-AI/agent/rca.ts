@@ -1,3 +1,5 @@
+// Main logic for running the Root Cause Analysis (RCA) agent, including pre-evaluation checks, LLM invocation, output parsing, and post-evaluation adjustments. It handles special cases for unknown events and missing data, ensuring robust performance even in edge cases.
+
 import { AgentInput, AgentOutput, ParseError } from "./types";
 import { callLLM } from "./llm-caller";
 import { parseAgentOutput } from "./output-parser";
