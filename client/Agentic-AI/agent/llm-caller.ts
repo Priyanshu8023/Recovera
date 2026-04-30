@@ -1,3 +1,5 @@
+// Core LLM caller logic for the AI agent, with robust error handling, retry logic, and support for both Gemini (primary) and Groq (fallback) providers. It formats the input for the LLM, makes API calls with timeouts, and gracefully handles failures by switching providers or throwing detailed errors.
+
 import { AgentInput } from "./types";
 import { getPrimaryConfig, getFallbackConfig, LLMProvider } from "./provider-config";
 import { LLMError } from "./errors";

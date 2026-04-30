@@ -1,3 +1,5 @@
+// Parses the raw output from the LLM, ensuring it conforms to the expected schema. It handles common issues like markdown fences, malformed JSON, missing fields, and out-of-range confidence values. The parser also coerces unknown actions to "unknown" and provides detailed error information for debugging and fallback handling.
+
 import { z } from "zod";
 import { AgentOutput, ParseError, ActionType } from "./types";
 
@@ -47,7 +49,7 @@ export function parseAgentOutput(raw: string): AgentOutput | ParseError {
 
   const result = agentOutputSchema.safeParse(parsedJson);
   if (!result.success) {
-    const firstError = result.error.errors[0];
+    const firstError = result.error.issues[0];
     return {
       kind: "ParseError",
       reason: "parse_error",

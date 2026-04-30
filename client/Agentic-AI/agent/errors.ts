@@ -1,3 +1,5 @@
+// Defines custom error classes for the AI agent, including LLMError for language model issues, AgentError for general agent errors, and VerificationError for verification failures. Each error class includes relevant details to aid in debugging and handling failures gracefully.
+
 import { LLMProvider } from "./provider-config";
 
 export class LLMError extends Error {
@@ -20,9 +22,9 @@ export class LLMError extends Error {
 }
 
 export class AgentError extends Error {
-  kind = "AgentError" as const;
+  kind = "AgentError";
 }
 
 export class VerificationError extends AgentError {
-  kind = "VerificationError" as const;
+  kind = "VerificationError";
 }
