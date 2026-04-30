@@ -1,3 +1,10 @@
+// Integration tests for the Recovera Agentic AI module, 
+// covering various scenarios such as happy paths, 
+// edge cases, and failure modes. The tests mock the LLM responses to 
+// simulate different conditions and verify that the agent behaves as expected, 
+// including decision paths, error handling, and report generation. Each test case corresponds to a 
+// specific scenario outlined in the test plan, ensuring comprehensive coverage of the agent's functionality.
+
 import { runAgent } from "../agent/index";
 import { AgentInput, DiagnosticReport } from "../agent/types";
 import * as llmCaller from "../agent/llm-caller";

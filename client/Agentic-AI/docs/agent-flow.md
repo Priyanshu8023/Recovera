@@ -20,3 +20,4 @@ The Agentic AI layer is designed as a stateless, idempotent pipeline.
 7. **Reporter**:
    - Synthesises the \`DiagnosticReport\`, calculating the risk score and formatting the Slack payload.
    - Wraps the entire flow in a global try/catch to guarantee a valid report is always returned.
+

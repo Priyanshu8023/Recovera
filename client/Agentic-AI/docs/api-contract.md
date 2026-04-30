@@ -27,3 +27,4 @@ const report: DiagnosticReport = await runAgent(input);
 ## Forbidden Actions
 - Do not import `llm-caller.ts`, `rca.ts`, or any other internal module.
 - Do not bypass the agent for auto-fixes.
+

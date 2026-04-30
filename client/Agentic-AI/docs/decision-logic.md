@@ -18,3 +18,4 @@ Execution evaluates in the following exact order:
 7. **Default Fallback**: -> \`alert_only\`
 
 These boundaries are strictly enforced. A confidence of 0.849 will never result in an auto fix.
+

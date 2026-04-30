@@ -14,3 +14,4 @@ The testing suite covers 12 core scenarios without making real API calls:
 10. **Confidence boundary 0.85**: Validates inclusive boundary results in \`auto_fix\`.
 11. **SlackPayload shape**: Validates 6 blocks are present.
 12. **Idempotency guard**: Validates \`status: "done"\` skips LLM and returns \`skip_reason === "already_resolved"\`.
+
