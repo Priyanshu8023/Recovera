@@ -12,7 +12,7 @@ export class LLMError extends Error {
     reason: "timeout" | "api_error" | "both_providers_failed",
     provider: LLMProvider | "none",
     message: string,
-    statusCode?: number
+    statusCode?: number,
   ) {
     super(message);
     this.reason = reason;
@@ -22,9 +22,9 @@ export class LLMError extends Error {
 }
 
 export class AgentError extends Error {
-  kind = "AgentError";
+  kind = "AgentError" as const;
 }
 
 export class VerificationError extends AgentError {
-  kind = "VerificationError";
+  kind = "VerificationError" as const;
 }
