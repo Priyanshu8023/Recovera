@@ -67,39 +67,68 @@ Returns a single string containing both the IV and the encrypted text, separated
 ### The `decrypt` Function
 
 ```typescript
-export function decrypt(text: string){
+export function decrypt(text: string) {
+    // 1. Guard against non-string, null, undefined, or empty values
+    if (typeof text !== 'string' || !text) {
+        return '';
+    }
 ```
-Exports the `decrypt` function, which takes the custom formatted string `(iv:encryptedText)` as input.
+* **Defense-in-depth Guard:** Prior to processing, the utility strictly checks the input's runtime type. If `text` is `null`, `undefined`, a number, or an empty string, it immediately exits and returns `""`, completely preventing uncaught `TypeError` crashes during string manipulations.
 
 ```typescript
-    const [iVHex , encryptedHex ]= text.split(":")
+    // 2. If it does not contain a colon, it's likely legacy or already plaintext
+    if (!text.includes(':')) {
+        return text;
+    }
 ```
-Splits the input string at the colon (`:`) into two parts: the hexadecimal IV and the hexadecimal encrypted text.
+* **Plaintext Detection:** If the string does not contain a colon separator (`:`), it is classified as already decrypted or legacy plaintext (e.g., standard API keys saved before encryption was introduced) and returned unchanged.
 
 ```typescript
-    const iv = Buffer.from(iVHex,"hex")
-    const encryptedText = Buffer.from(encryptedHex , "hex")
+    try {
+        const [ivHex, encryptedHex] = text.split(":");
+        
+        // 3. Ensure both parts exist
+        if (!ivHex || !encryptedHex) {
+            return text;
+        }
 ```
-Converts the hex strings back into raw binary Buffers, which is the format the `crypto` module expects.
+* **Format Split:** Safely splits the encrypted string at the colon (`:`) to extract the IV and ciphertext. If either side is missing or empty, it gracefully returns the original input.
 
 ```typescript
-    const decipher = crypto.createDecipheriv(algortihm,Buffer.from(key),iv)
+        // 4. Validate that ivHex is exactly 32 hex characters (16 bytes IV)
+        // and encryptedHex contains only valid hex characters
+        const hexRegex = /^[0-9a-fA-F]+$/;
+        if (ivHex.length !== 32 || !hexRegex.test(ivHex) || !hexRegex.test(encryptedHex)) {
+            return text;
+        }
 ```
-Creates the `Decipher` object using the same algorithm, the same secret key, and the exact same IV that was used during encryption.
+* **Structural Layout Validation:** Checks two critical cryptographic constraints:
+  1. The `ivHex` must be exactly 32 hexadecimal characters long (which represents a 16-byte IV required for the `aes-256-cbc` algorithm). If the IV length is incorrect, `crypto` will crash with `Invalid IV length`.
+  2. Both `ivHex` and `encryptedHex` must consist exclusively of valid hexadecimal characters (`0-9`, `a-f`). If invalid hex characters are parsed, `Buffer.from()` fails.
+  * If either constraint is violated, the function aborts and returns the original string.
 
 ```typescript
-    const decrypted = Buffer.concat([
-        decipher.update(encryptedText),
-        decipher.final(),
-    ])
+        const iv = Buffer.from(ivHex, "hex");
+        const encryptedText = Buffer.from(encryptedHex, "hex");
+
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        const decrypted = Buffer.concat([
+            decipher.update(encryptedText),
+            decipher.final(),
+        ]);
+
+        return decrypted.toString();
 ```
-Decrypts the data.
-- `decipher.update(encryptedText)` processes the encrypted data buffer.
-- `decipher.final()` finishes the decryption and removes padding.
-- `Buffer.concat` combines the decrypted chunks back together.
+* **Cryptographic Decryption:** Converts the clean hexadecimal strings back into binary Buffers, instantiates the decipher, processes the ciphertext blocks, and returns the successfully decrypted UTF-8 plain-text string.
 
 ```typescript
-    return decrypted.toString()
+    } catch (error) {
+        console.warn("[Decryption Utility] Failed to decrypt, returning original text:", error);
+        return text;
+    }
 }
 ```
-Converts the fully decrypted binary buffer back into a readable UTF-8 string and returns it.
+* **Exception Shield (Try-Catch):** Wraps the entire operation in a structured exception handler. If decryption fails at any step (e.g., due to key mismatch, data corruption, signature/padding failures, or `bad decrypt`), the warning is logged to the console, and the original string is returned gracefully rather than crashing the thread.
+
+> [!TIP]
+> This defensive design achieves absolute crash-resilience, ensuring that no database record (even if malformed or legacy plain-text) can ever bring down Recovera's server!

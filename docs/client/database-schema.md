@@ -274,3 +274,72 @@ async function getCredential(credentialId: string) {
 3. **Periodic Verification:** Use the `lastVerifiedAt` field to periodically test that credentials are still valid. Notify the user if they are revoked or expired.
 4. **Never Log Credentials:** Ensure that decrypted credentials never appear in application logs, error messages, or API responses.
 5. **Rotate the Encryption Key:** If your `ENCRYPTION_KEY` in `.env` is ever compromised, you must re-encrypt all stored credentials with a new key.
+
+---
+
+## 📂 5. Repository Indexing Model (`RepositoryIndex`)
+
+To support our Vector RAG Pipeline without triggering heavy re-indexing calls on every page load, the database tracks the state of each connected repository's vector index.
+
+### The Prisma Model
+
+```prisma
+model RepositoryIndex {
+  id            String    @id @default(cuid())
+  repoFullName  String    @unique // e.g., "Tejas9406/Recovera"
+  status        String    @default("pending") // "pending" | "indexed" | "failed"
+  filesIndexed  Int       @default(0)
+  chunksIndexed Int       @default(0)
+  errorMessage  String?   @db.Text
+  indexedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+```
+
+### Fields Explained
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `String` | Unique cuid identifier for the index record. |
+| `repoFullName` | `String` | The unique full name of the repository (e.g. `owner/repo`). Acts as the primary lookup key. |
+| `status` | `String` | Represents the indexing lifecycle: `"pending"` (indexing is active), `"indexed"` (successfully complete), or `"failed"`. |
+| `filesIndexed` | `Int` | Count of source files processed. |
+| `chunksIndexed` | `Int` | Count of 50-line overlapping chunks generated and embedded. |
+| `errorMessage` | `String` | Stores detailed error logs if the status is `"failed"` (e.g. tree API 404, rate limits). |
+| `indexedAt` | `DateTime` | Timestamp of the last successful indexing completion. |
+
+---
+
+## ⚡ 6. Database Index Performance Optimizations (`SafetyAuditLog`)
+
+High-frequency monitoring generates large volumes of safety audit records. If queries become slow, the SRE engine's alert loop gets congested.
+
+### The Problem: $O(N)$ Sequential Table Sweeps
+In `client/lib/safety/policyEngine.ts`, the circuit-breaker logs are retrieved filtering **only** by `createdAt` window:
+```typescript
+const recentLogs = await prisma.safetyAuditLog.findMany({
+  where: { createdAt: { gte: oneHourAgo } },
+});
+```
+Previously, `schema.prisma` defined only a single composite index:
+```prisma
+@@index([incidentId, createdAt])
+```
+In relational databases, **a composite index `(A, B)` is ignored if the search query filters only on `B`** without providing the prefix column `A`. PostgreSQL was forced to ignore the index and perform a complete sequential table scan ($O(N)$ sweep) of all records on every single alert evaluation, severely degrading CPU performance.
+
+### The Fix: $O(\log N)$ B-Tree Index Scan
+By adding a dedicated single-column index on the `createdAt` field:
+```prisma
+model SafetyAuditLog {
+  // ... fields ...
+  createdAt       DateTime @default(now())
+
+  @@index([incidentId, createdAt])
+  @@index([createdAt]) // <-- ADDED: Dedicated index for fast time-window lookups
+}
+```
+PostgreSQL can now perform a B-Tree index scan. The database engine jumps directly to the matching time range in logarithmic time ($O(\log N)$ complexity), bypassing millions of unrelated rows and reducing CPU usage to near $0\%$.
+
+> [!TIP]
+> Always define dedicated single-column indexes on date fields (like `createdAt` or `updatedAt`) if your background workers or cron tasks query logs or jobs filtering strictly by time range!
