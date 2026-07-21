@@ -147,11 +147,14 @@ Recovera/
     npm install
     ```
 
-3.  **Environment Configuration**
-    Copy `.env.example` to `.env` and fill in your credentials.
-    ```bash
-    cp .env.example .env
-    ```
+3. **Environment Configuration**
+   Copy `.env.example` to `.env` and fill in your credentials.
+
+   > **Note:** Double-check that all required environment variables are configured before running database migrations or starting the development server to avoid initialization errors.
+
+   ```bash
+   cp .env.example .env
+   ```
 
 4.  **Database Migration**
     ```bash
