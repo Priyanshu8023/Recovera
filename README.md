@@ -11,7 +11,7 @@
 
 Recovera is an intelligent SRE (Site Reliability Engineering) platform designed to bridge the gap between production anomalies and resolution. It transforms raw logs and alerts into actionable root-cause analysis (RCA) and safety-gated remediation workflows.
 
-[**Quick Start Guide**](#-installation) | [**View Demo**](https://drive.google.com/file/d/1SfO5jKV9pYUv7NR5GFOCqIYiwpbH1St5/view?usp=drivesdk) | [**Documentation**](./docs/)
+[**Quick Start Guide**](#-installation) | [**View Demo**](https://drive.google.com/file/d/1SfO5jKV9pYUv7NR5GFOCqIYiwpbH1St5/view?usp=drivesdk) | [**Documentation Guide**](./docs/guide/part-1-introduction.md)
 
 ---
 
@@ -24,6 +24,19 @@ Modern engineering teams are overwhelmed by the volume of production signals. Wh
 - **AI-Driven RCA**: Leverages LLMs (Gemini/xAI) to hypothesize root causes with high confidence.
 - **Safety-First Remediation**: Generates code fixes and opens Pull Requests only after passing policy-based safety checks.
 - **Closed-Loop Learning**: Stores incident outcomes to improve future analysis accuracy.
+
+---
+
+## 📚 6-Part Documentation Guide
+
+We have completely rewritten our documentation to provide a detailed, step-by-step understanding of how Recovera works. Each part includes examples and deep dives into the platform's architecture.
+
+1. [**Part 1: Introduction & Overview**](./docs/guide/part-1-introduction.md) - High-level overview and scenario examples.
+2. [**Part 2: Architecture & Foundation**](./docs/guide/part-2-architecture.md) - How Next.js, Redis, and PostgreSQL work together.
+3. [**Part 3: Ingestion & Anomaly Detection**](./docs/guide/part-3-ingestion-and-detection.md) - Log processing and hybrid anomaly detection.
+4. [**Part 4: AI Root Cause Analysis (RCA)**](./docs/guide/part-4-ai-root-cause-analysis.md) - How Gemini/xAI analyze stack traces and git diffs.
+5. [**Part 5: Remediation & Safety**](./docs/guide/part-5-remediation-and-safety.md) - Policy engine guardrails and automated pull requests.
+6. [**Part 6: Custom Integrations & Extensibility**](./docs/guide/part-6-deployment-and-scaling.md) - Deploying the system and adding custom hooks.
 
 ---
 
